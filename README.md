@@ -147,7 +147,33 @@ WHERE property_id = 1 AND client_id = 1;
 
 
 ```
-![Reference](/SqlImage/Image5.png)
+
+```SQL
+-- Select data with join
+-- This query retrieves property titles, agent names, client names, and transaction dates
+SELECT p.title, a.name AS agent_name, c.name AS client_name, pc.transaction_date
+FROM PROPERTY p
+JOIN PROPERTY_AGENT pa ON p.property_id = pa.property_id
+JOIN AGENT a ON pa.agent_id = a.agent_id
+LEFT JOIN PROPERTY_CLIENT pc ON p.property_id = pc.property_id
+LEFT JOIN CLIENT c ON pc.client_id = c.client_id;
+
+
+
+```
+
+```SQL
+-- Subquery example
+-- This query finds all properties that are currently listed (not yet transacted)
+SELECT title
+FROM PROPERTY
+WHERE property_id NOT IN (
+    SELECT property_id
+    FROM PROPERTY_CLIENT
+);
+
+```
+
 
 
 ### Transaction Management
