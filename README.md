@@ -16,13 +16,42 @@ The database consists of several core tables that store essential data about pro
 
 3. **CLIENT**: This table captures data about clients who are interested in renting or purchasing properties. Every client is assigned a unique client_id. Additional information such as the client’s name, email, and registration date helps to identify and communicate with clients.
 
-![Reference](/SqlImage/image1.png)
+```SQL
 
+CREATE TABLE PROPERTY (
+    property_id INT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    listing_number VARCHAR(13) UNIQUE,
+    listing_date DATE
+);
+```
+
+```SQL
+-- AGENT table: Stores information about real estate agents
+CREATE TABLE AGENT (
+    agent_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    birth_date DATE
+);
+
+```
+
+```SQL
+-- CLIENT table: Stores information about clients who can rent or buy properties
+CREATE TABLE CLIENT (
+    client_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    registration_date DATE
+);
+
+```
 ### Junction Tables
 
 1. **PROPERTY_AGENT**: This table establishes a many-to-many relationship between properties and agents. Each property can be managed by multiple agents, and an agent can manage several properties. The table links properties and agents through their respective unique identifiers (property_id and agent_id). 
 
 2. **PROPERTY_CLIENT**: This table tracks transactions between clients and properties. It records when a client rents or purchases a property and includes the property_id, client_id, and transaction date. This setup allows multiple clients to engage with different properties over time, and each transaction is uniquely identified by a combination of these attributes.
+
 ![Reference](/SqlImage/Image2.png)
 
 
