@@ -17,6 +17,7 @@ The database consists of several core tables that store essential data about pro
 3. **CLIENT**: This table captures data about clients who are interested in renting or purchasing properties. Every client is assigned a unique client_id. Additional information such as the client’s name, email, and registration date helps to identify and communicate with clients.
 
 ```SQL
+-- PROPERTY table: Stores information about properties
 
 CREATE TABLE PROPERTY (
     property_id INT PRIMARY KEY,
@@ -52,7 +53,32 @@ CREATE TABLE CLIENT (
 
 2. **PROPERTY_CLIENT**: This table tracks transactions between clients and properties. It records when a client rents or purchases a property and includes the property_id, client_id, and transaction date. This setup allows multiple clients to engage with different properties over time, and each transaction is uniquely identified by a combination of these attributes.
 
-![Reference](/SqlImage/Image2.png)
+```SQL
+-- PROPERTY_AGENT table: Junction table for many-to-many relationship between PROPERTY and AGENT
+-- This allows a property to be managed by multiple agents and an agent to manage multiple properties
+CREATE TABLE PROPERTY_AGENT (
+    property_id INT,
+    agent_id INT,
+    PRIMARY KEY (property_id, agent_id),
+    FOREIGN KEY (property_id) REFERENCES PROPERTY(property_id),
+    FOREIGN KEY (agent_id) REFERENCES AGENT(agent_id)
+);
+
+```
+
+```SQL
+-- PROPERTY_CLIENT table: Junction table for many-to-many relationship between PROPERTY and CLIENT
+-- This tracks which properties are rented or bought by which clients and when
+CREATE TABLE PROPERTY_CLIENT (
+    property_id INT,
+    client_id INT,
+    transaction_date DATE,
+    PRIMARY KEY (property_id, client_id, transaction_date),
+    FOREIGN KEY (property_id) REFERENCES PROPERTY(property_id),
+    FOREIGN KEY (client_id) REFERENCES CLIENT(client_id)
+);
+
+```
 
 
 You can place the **ER Diagram** paragraph right after the **Database Schema** section, just before the **Key Features** section. This will provide a natural flow, where readers first get an overview of the schema and then see how the entities are related visually before moving on to the specific features of the database.
@@ -101,7 +127,26 @@ The system demonstrates various SQL operations, including:
 
 ![Reference](/SqlImage/Image3.png)
 ![Reference](/SqlImage/Image4.png)
-![Reference](/SqlImage/Update&Delete%20image.png)
+
+
+
+```SQL
+-- Update data
+-- Modifying the title of a property
+UPDATE PROPERTY 
+SET title = 'Downtown Apartment (Renovated)' 
+WHERE property_id = 1;
+
+```
+
+```SQL
+-- Delete data
+-- Removing a property transaction record
+DELETE FROM PROPERTY_CLIENT 
+WHERE property_id = 1 AND client_id = 1;
+
+
+```
 ![Reference](/SqlImage/Image5.png)
 
 
@@ -121,7 +166,27 @@ The project also demonstrates how to control access to the database using DCL co
 - Transactions are handled using `BEGIN` and `COMMIT` statements to ensure that multiple data changes are treated as a single operation. This guarantees that either all changes are applied, or none are, in the case of an error.
 
  ## **Here is the DCL** & **TCL** Sql queries
-![Reference](/SqlImage/Image6.png)
+```SQL
+
+-- DCL: Grant select permission on PROPERTY table to a user
+GRANT SELECT ON PROPERTY TO C##NAGZ;
+
+```
+
+
+
+```SQL
+
+-- TCL: Start a transaction, insert a new property, and commit
+
+BEGIN
+    INSERT INTO PROPERTY (property_id, title, listing_number, listing_date) 
+    VALUES (4, 'Mountain Cabin', 'LIST1122334455', TO_DATE('2023-05-05', 'YYYY-MM-DD'));
+    COMMIT;
+END;
+
+
+```
 
 
 
